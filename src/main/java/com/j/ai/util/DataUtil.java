@@ -23,8 +23,9 @@ public class DataUtil
 
 	public static synchronized DataUtil getInstance()
 	{
-		if (instance == null)
+		if (instance == null) {
 			instance = new DataUtil();
+		}
 		return instance;
 
 	}
@@ -41,14 +42,16 @@ public class DataUtil
 
 	public String getTypeName(int type)
 	{
-		if (type == -1)
-			return new String("无法判断");
+		if (type == -1) {
+			return "无法判断";
+		}
 		Iterator<String> keys = mTypes.keySet().iterator();
 		while (keys.hasNext())
 		{
 			String key = keys.next();
-			if (mTypes.get(key) == type)
+			if (mTypes.get(key) == type) {
 				return key;
+			}
 		}
 		return null;
 	}

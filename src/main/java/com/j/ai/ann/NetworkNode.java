@@ -1,158 +1,140 @@
 package com.j.ai.ann;
 
-public class NetworkNode
-{
-	public static final int TYPE_INPUT = 0;
-	public static final int TYPE_HIDDEN = 1;
-	public static final int TYPE_OUTPUT = 2;
+import java.io.Serializable;
 
-	private int type;
+public class NetworkNode implements Serializable {
+    public static final int TYPE_INPUT = 0;
+    public static final int TYPE_HIDDEN = 1;
+    public static final int TYPE_OUTPUT = 2;
 
-	public void setType(int type)
-	{
-		this.type = type;
-	}
+    private int type;
 
-	// 节点前向输入输出值
-	private float mForwardInputValue;
-	private float mForwardOutputValue;
+    public void setType(int type) {
+        this.type = type;
+    }
 
-	// 节点反向输入输出值
-	private float mBackwardInputValue;
-	private float mBackwardOutputValue;
+    // 节点前向输入输出值
+    private float mForwardInputValue;
+    private float mForwardOutputValue;
 
-	public NetworkNode()
-	{
-	}
+    // 节点反向输入输出值
+    private float mBackwardInputValue;
+    private float mBackwardOutputValue;
 
-	public NetworkNode(int type)
-	{
-		this.type = type;
-	}
+    public NetworkNode() {
+    }
 
-	/**
-	 * sigmoid函数，这里用tan-sigmoid，经测试其效果比log-sigmoid好！
-	 * 
-	 * @param in
-	 * @return
-	 */
-	private float forwardSigmoid(float in)
-	{
-		switch (type)
-		{
-		case TYPE_INPUT:
-			return in;
-		case TYPE_HIDDEN:
-		case TYPE_OUTPUT:
-			return tanhS(in);
-		}
-		return 0;
-	}
+    public NetworkNode(int type) {
+        this.type = type;
+    }
 
-	/**
-	 * log-sigmoid函数
-	 * 
-	 * @param in
-	 * @return
-	 */
-	private float logS(float in)
-	{
-		return (float) (1 / (1 + Math.exp(-in)));
-	}
+    /**
+     * sigmoid函数，这里用tan-sigmoid，经测试其效果比log-sigmoid好！
+     *
+     * @param in
+     * @return
+     */
+    private float forwardSigmoid(float in) {
+        switch (type) {
+            case TYPE_INPUT:
+                return in;
+            case TYPE_HIDDEN:
+            case TYPE_OUTPUT:
+                return tanhS(in);
+			default:break;
+        }
+        return 0;
+    }
 
-	/**
-	 * log-sigmoid函数的导数
-	 * 
-	 * @param in
-	 * @return
-	 */
-	private float logSDerivative(float in)
-	{
-		return mForwardOutputValue * (1 - mForwardOutputValue) * in;
-	}
+    /**
+     * log-sigmoid函数
+     *
+     * @param in
+     * @return
+     */
+    private float logS(float in) {
+        return (float) (1 / (1 + Math.exp(-in)));
+    }
 
-	/**
-	 * tan-sigmoid函数
-	 * 
-	 * @param in
-	 * @return
-	 */
-	private float tanhS(float in)
-	{
-		return (float) ((Math.exp(in) - Math.exp(-in)) / (Math.exp(in) + Math
-				.exp(-in)));
-	}
+    /**
+     * log-sigmoid函数的导数
+     *
+     * @param in
+     * @return
+     */
+    private float logSDerivative(float in) {
+        return mForwardOutputValue * (1 - mForwardOutputValue) * in;
+    }
 
-	/**
-	 * tan-sigmoid函数的导数
-	 * 
-	 * @param in
-	 * @return
-	 */
-	private float tanhSDerivative(float in)
-	{
-		return (float) ((1 - Math.pow(mForwardOutputValue, 2)) * in);
-	}
+    /**
+     * tan-sigmoid函数
+     *
+     * @param in
+     * @return
+     */
+    private float tanhS(float in) {
+        return (float) ((Math.exp(in) - Math.exp(-in)) / (Math.exp(in) + Math.exp(-in)));
+    }
 
-	/**
-	 * 误差反向传播时，激活函数的导数
-	 * 
-	 * @param in
-	 * @return
-	 */
-	private float backwardPropagate(float in)
-	{
-		switch (type)
-		{
-		case TYPE_INPUT:
-			return in;
-		case TYPE_HIDDEN:
-		case TYPE_OUTPUT:
-			return tanhSDerivative(in);
-		}
-		return 0;
-	}
+    /**
+     * tan-sigmoid函数的导数
+     *
+     * @param in
+     * @return
+     */
+    private float tanhSDerivative(float in) {
+        return (float) ((1 - Math.pow(mForwardOutputValue, 2)) * in);
+    }
 
-	public float getForwardInputValue()
-	{
-		return mForwardInputValue;
-	}
+    /**
+     * 误差反向传播时，激活函数的导数
+     *
+     * @param in
+     * @return
+     */
+    private float backwardPropagate(float in) {
+        switch (type) {
+            case TYPE_INPUT:
+                return in;
+            case TYPE_HIDDEN:
+            case TYPE_OUTPUT:
+                return tanhSDerivative(in);
+        }
+        return 0;
+    }
 
-	public void setForwardInputValue(float mInputValue)
-	{
-		this.mForwardInputValue = mInputValue;
-		setForwardOutputValue(mInputValue);
-	}
+    public float getForwardInputValue() {
+        return mForwardInputValue;
+    }
 
-	public float getForwardOutputValue()
-	{
-		return mForwardOutputValue;
-	}
+    public void setForwardInputValue(float mInputValue) {
+        this.mForwardInputValue = mInputValue;
+        setForwardOutputValue(mInputValue);
+    }
 
-	private void setForwardOutputValue(float mInputValue)
-	{
-		this.mForwardOutputValue = forwardSigmoid(mInputValue);
-	}
+    public float getForwardOutputValue() {
+        return mForwardOutputValue;
+    }
 
-	public float getBackwardInputValue()
-	{
-		return mBackwardInputValue;
-	}
+    private void setForwardOutputValue(float mInputValue) {
+        this.mForwardOutputValue = forwardSigmoid(mInputValue);
+    }
 
-	public void setBackwardInputValue(float mBackwardInputValue)
-	{
-		this.mBackwardInputValue = mBackwardInputValue;
-		setBackwardOutputValue(mBackwardInputValue);
-	}
+    public float getBackwardInputValue() {
+        return mBackwardInputValue;
+    }
 
-	public float getBackwardOutputValue()
-	{
-		return mBackwardOutputValue;
-	}
+    public void setBackwardInputValue(float mBackwardInputValue) {
+        this.mBackwardInputValue = mBackwardInputValue;
+        setBackwardOutputValue(mBackwardInputValue);
+    }
 
-	private void setBackwardOutputValue(float input)
-	{
-		this.mBackwardOutputValue = backwardPropagate(input);
-	}
+    public float getBackwardOutputValue() {
+        return mBackwardOutputValue;
+    }
+
+    private void setBackwardOutputValue(float input) {
+        this.mBackwardOutputValue = backwardPropagate(input);
+    }
 
 }
